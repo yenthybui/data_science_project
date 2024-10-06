@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 import dash
 from dash import dcc
 from dash import html
@@ -13,7 +7,7 @@ import plotly.graph_objs as go
 import plotly.express as px
 
 # Load the data using pandas
-data = pd.read_csv('https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DV0101EN-SkillsNetwork/Data%20Files/historical_automobile_sales.csv')
+data = pd.read_csv('data/historical_automobile_sales.csv')
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
@@ -32,12 +26,11 @@ year_list = [i for i in range(1980, 2024, 1)]
 #---------------------------------------------------------------------------------------
 # Create the layout of the app
 app.layout = html.Div([
-    #TASK 2.1 Add title to the dashboard
     html.H1("Automobile Sales Statistics Dashboard", 
             style={'textAlign':'center', 
                    'color':'#503D36',
                    'font-size':24}),
-    html.Div([#TASK 2.2: Add two dropdown menus
+    html.Div([
         html.Label("Select Statistics:"),
         dcc.Dropdown(
             id='dropdown-statistics',
@@ -52,10 +45,10 @@ app.layout = html.Div([
             # value='Select Year',
             placeholder='Select a year'
         )),
-    html.Div([#TASK 2.3: Add a division for output display
+    html.Div([
     html.Div(id='output-container', className='chart-grid', style={'display':'flex'}),])
 ])
-#TASK 2.4: Creating Callbacks
+
 # Define the callback function to update the input container based on the selected statistics
 @app.callback(
     Output(component_id='select-year', component_property='disabled'),
@@ -78,8 +71,6 @@ def update_output_container(selected_statistics, input_year):
     if selected_statistics == 'Recession Period Statistics':
         # Filter the data for recession periods
         recession_data = data[data['Recession'] == 1]
-        
-#TASK 2.5: Create and display graphs for Recession Report Statistics
 
 #Plot 1 Automobile sales fluctuate over Recession Period (year wise)
         # use groupby to create relevant data for plotting
@@ -129,12 +120,9 @@ def update_output_container(selected_statistics, input_year):
             html.Div(className='chart-item', children=[html.Div(children=R_chart3),html.Div(children=R_chart4)],style={'display':'flex'})
             ]
 
-# TASK 2.6: Create and display graphs for Yearly Report Statistics
  # Yearly Statistic Report Plots                             
     elif (input_year and selected_statistics=='Yearly Statistics') :
         yearly_data = data[data['Year'] == input_year]
-                              
-#TASK 2.5: Creating Graphs Yearly data
                               
 #plot 1 Yearly Automobile sales using line chart for the whole period.
         yas = data.groupby('Year')['Automobile_Sales'].sum().reset_index()
@@ -174,7 +162,6 @@ def update_output_container(selected_statistics, input_year):
                 )
             )
 
-#TASK 2.6: Returning the graphs for displaying Yearly data
         return [
             html.Div(className='chart-item', children=[html.Div(children=Y_chart1),html.Div(children=Y_chart2)],style={'display': 'flex'}),
             html.Div(className='chart-item', children=[html.Div(children=Y_chart3),html.Div(children=Y_chart4)],style={'display': 'flex'})
